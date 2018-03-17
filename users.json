@@ -1,22 +1,67 @@
 {
-    "users": [
-      {
-        "id": 1,
-        "name": "bruno",
-        "email": "bruno@email.com",
-        "password": "bruno"
-      },
-      {
-        "id": 2,
-        "name": "techie",
-        "email": "techie@email.com",
-        "password": "techie"
-      },
-      {
-        "id": 3,
-        "name": "Manny Fresh",
-        "email": "enarh@visa.com",
-        "password": "test"
-      }
-    ]
-  }
+  "users": [
+    {
+      "id": 1,
+      "firstname": "bruno",
+      "lastname": "bruno last",
+      "email": "bruno@email.com",
+      "password": "bruno",
+      "accounts": [
+        {
+          "id": 1,
+          "merchantId": 1,
+          "username": "bruno",
+          "permissions": []
+        },
+        {
+          "id": 2,
+          "merchantId": "2",
+          "username": "bruno2",
+          "permissions": []
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "firstname": "techie",
+      "lastname": "technie last",
+      "email": "techie@email.com",
+      "password": "techie",
+      "accounts": [
+        {
+          "id": 1,
+          "merchantId": 1,
+          "username": "techie",
+          "permissions": []
+        },
+        {
+          "id": 2,
+          "merchantId": 3,
+          "username": "techie2",
+          "permissions": []
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "firstname": "Manny",
+      "lastname": "Fresh",
+      "email": "eanarh@gmail.com",
+      "password": "password",
+      "accounts": [
+        {
+          "id": 1,
+          "merchantId": 2,
+          "username": "manny",
+          "permissions": []
+        },
+        {
+          "id": 2,
+          "merchantId": 3,
+          "username": "manny2",
+          "permissions": []
+        }
+      ]
+    }
+  ]
+}
