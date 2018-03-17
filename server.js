@@ -118,9 +118,12 @@ server.post('/auth/login/send-pin', (req, res) => {
 
   user.pin = Math.floor(Math.random() * 90000) + 10000;
 
-  sendMail(user, (err) => {
+  sendMail(user, (err, info) => {
     if (err) {
-      res.status(500);
+      res.status(500).json({
+        status: 500,
+        message: 'error sending pin'
+      });
       return;
     }
     res.status(200).json({});

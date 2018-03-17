@@ -1,19 +1,27 @@
 const nodemailer = require('nodemailer');
 
-// create reusable transporter object using the default SMTP transport
-const transporter = nodemailer.createTransport({
-  host: 'smtp.ethereal.email',
+// const transporter = nodemailer.createTransport({
+//   host: 'smtp.ethereal.email',
+//   port: 587,
+//   secure: false,
+//   auth: {
+//     user: 'nwjq6c2rwg4beyuh@ethereal.email',
+//     pass: 'qUxhbAgewsccCH7dJa'
+//   }
+// });
+
+const sendGridtransporter = nodemailer.createTransport({
+  host: 'smtp.sendgrid.net',
   port: 587,
-  secure: false,
+  requiresAuth: true,
   auth: {
-    user: 'nwjq6c2rwg4beyuh@ethereal.email',
-    pass: 'qUxhbAgewsccCH7dJa'
+    user: 'eanarh',
+    pass: '97plymouth'
   }
 });
 
-  // setup email data with unicode symbols
 const mailOptions = ({ email, pin }) => ({
-  from: '"Authorize.NET <noreply@authorize.net>',
+  from: 'Authorize.NET Dev <noreply@mintymint.herokuapp.com>',
   to: email,
   subject: 'PIN for Authorize.NET Account',
   text: `Requested PIN is ${pin}`,
@@ -21,12 +29,12 @@ const mailOptions = ({ email, pin }) => ({
 });
 
 const sendMail = (user, callback) => {
-  transporter.sendMail(mailOptions(user), (err, info) => {
+  sendGridtransporter.sendMail(mailOptions(user), (err, info) => {
     if (err) console.error(err);
-    console.log('Message sent: %s', info.messageId);
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+    // console.log('Message sent: %s', info.messageId);
+    // console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
     if (typeof callback === 'function') {
-      callback(err);
+      callback(err, info);
     }
   });
 };

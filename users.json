@@ -15,7 +15,7 @@
         },
         {
           "id": 2,
-          "merchantId": "2",
+          "merchantId": 2,
           "username": "bruno2",
           "permissions": []
         }
@@ -59,6 +59,48 @@
           "id": 2,
           "merchantId": 3,
           "username": "manny2",
+          "permissions": []
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "firstname": "Don",
+      "lastname": "Julio",
+      "email": "eanarh@yahoo.com",
+      "password": "password",
+      "accounts": [
+        {
+          "id": 1,
+          "merchantId": 1,
+          "username": "don",
+          "permissions": []
+        },
+        {
+          "id": 2,
+          "merchantId": 3,
+          "username": "don2",
+          "permissions": []
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "firstname": "Jane",
+      "lastname": "Brown",
+      "email": "enarh@visa.com",
+      "password": "password",
+      "accounts": [
+        {
+          "id": 1,
+          "merchantId": 1,
+          "username": "jane",
+          "permissions": []
+        },
+        {
+          "id": 2,
+          "merchantId": 3,
+          "username": "jane1",
           "permissions": []
         }
       ]
