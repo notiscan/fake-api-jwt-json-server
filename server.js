@@ -2,6 +2,9 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 const jsonServer = require('json-server');
 const jwt = require('jsonwebtoken');
+const request = require('supertest');
+
+const sendMail = require('./sendMail');
 
 const server = jsonServer.create();
 const router = jsonServer.router('./database.json');
@@ -115,7 +118,13 @@ server.post('/auth/login/send-pin', (req, res) => {
 
   user.pin = Math.floor(Math.random() * 90000) + 10000;
 
-  res.status(200).json({ pin: user.pin });
+  sendMail(user, (err) => {
+    if (err) {
+      res.status(500);
+      return;
+    }
+    res.status(200).json({});
+  });
 });
 
 server.post('/auth/login/verify-pin', (req, res) => {
@@ -191,18 +200,24 @@ server.post('/auth/login/select-username', (req, res) => {
     return;
   }
 
-  usernames = user.accounts.map(account => {
-    return {
-      username: account.username,
-      merchantId: account.merchantId
-    };
-  });
-
   delete user.pin;
   delete user.tmpPin;
   delete user.isVerified;
 
-  res.status(200).json({ usernames });
+  request(server)
+    .get('/merchants')
+    .set('Authorization', `Bearer ${createToken(user)}`)
+    .end((err, r) => {
+      if (err) throw err;
+      usernames = user.accounts.map(account => {
+        return {
+          username: account.username,
+          merchant: r.body.filter((merchant) => merchant.id === account.merchantId)[0]
+        };
+      });
+
+      res.status(200).json({ usernames });
+    });
 });
 
 server.use(/^(?!\/auth).*$/, (req, res, next) => {
