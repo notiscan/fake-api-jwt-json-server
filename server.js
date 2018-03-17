@@ -14,18 +14,18 @@ server.use(jsonServer.defaults());
 const SECRET_KEY = '123456789';
 const expiresIn = '1h';
 
+const invalidParams = {
+  status: 406,
+  message: 'missing request parameters'
+};
+const unauthorized = {
+  status: 401,
+  message: 'unauthorized access'
+};
+
 // Create a token from a payload
 const createToken = ({firstname, lastname, email, accounts}) => {
   return jwt.sign({firstname, lastname, email, accounts}, SECRET_KEY, {expiresIn});
-}
-
-// Verify the token
-const verifyToken = (token) => {
-  return jwt.verify(token, SECRET_KEY, (err, decode) => decode !== undefined ? decode : err);
-}
-
-const isAuthenticated = ({ user, password }) => {
-  return user.password === password;
 };
 
 const getUser = (username) => {
@@ -36,30 +36,173 @@ const getUser = (username) => {
 
 server.post('/auth/login', (req, res) => {
   const { username, password } = req.body;
-  const status = 401;
-  const message = 'Incorrect username or password';
+  let user = null;
 
-  if (username && password) {
-    const user = getUser(username);
+  if (!username || !password) {
+    res.status(invalidParams.status).json(invalidParams);
+  }
 
-    if (user === null) {
-      res.status(status).json({ status, message });
-      return;
-    }
-
-    if (isAuthenticated({ user, password }) === false) {
-      res.status(status).json({ status, message });
-      return;
-    }
-
-    const accessToken = createToken(user);
-    res.status(200).json({accessToken});
+  user = getUser(username);
+  if (!user) {
+    res.status(unauthorized.status).json(unauthorized);
     return;
   }
-  res.status(406).json({
-    status: 406,
-    message: 'username or password missing in request'
+
+  if (user.password !== password) {
+    res.status(unauthorized.status).json(unauthorized);
+    return;
+  }
+
+  res.status(200).json({ accessToken: createToken(user) });
+});
+
+server.post('/auth/login/forgot-username', (req, res) => {
+  const { firstname, lastname, email } = req.body;
+  let user = null;
+
+  if (!firstname || !lastname || !email) {
+    res.status(invalidParams.status).json(invalidParams);
+  }
+
+  user = userdb.users.filter(user => (
+    user.firstname.toLowerCase() === firstname.toLowerCase() &&
+    user.lastname.toLowerCase() === lastname.toLowerCase() &&
+    user.email.toLowerCase() === email.toLowerCase()
+  ))[0];
+  if (!user) {
+    res.status(unauthorized.status).json(unauthorized);
+    return;
+  }
+
+  user.tmpPin = Math.floor(Math.random() * 90000) + 10000;
+
+  res.status(200).json({ tmpPin: user.tmpPin });
+});
+
+server.post('/auth/login/forgot-password', (req, res) => {
+  const { username, email } = req.body;
+  let user = null;
+
+  if (!username || !email) {
+    res.status(invalidParams.status).json(invalidParams);
+  }
+
+  user = getUser(username);
+  if (!user) {
+    res.status(unauthorized.status).json(unauthorized);
+    return;
+  }
+
+  user.tmpPin = Math.floor(Math.random() * 90000) + 10000;
+
+  res.status(200).json({ tmpPin: user.tmpPin });
+});
+
+server.post('/auth/login/send-pin', (req, res) => {
+  const { tmpPin } = req.body;
+  let user = null;
+
+  if (!tmpPin) {
+    res.status(invalidParams.status).json(invalidParams);
+    return;
+  }
+
+  user = userdb.users.filter((user) => user.tmpPin && user.tmpPin === tmpPin)[0];
+  if (!user) {
+    res.status(unauthorized.status).json(unauthorized);
+    return;
+  }
+
+  user.pin = Math.floor(Math.random() * 90000) + 10000;
+
+  res.status(200).json({ pin: user.pin });
+});
+
+server.post('/auth/login/verify-pin', (req, res) => {
+  const { pin, tmpPin } = req.body;
+  let user = null;
+
+  if (!pin || !tmpPin) {
+    res.status(invalidParams.status).json(invalidParams);
+    return;
+  }
+
+  user = userdb.users.filter((user) => user.pin && user.tmpPin && user.pin === pin && user.tmpPin === tmpPin)[0];
+  user.isVerified = true;
+
+  if (!user) {
+    res.status(unauthorized.status).json(unauthorized);
+    return;
+  }
+
+  res.status(200).json({});
+});
+
+server.post('/auth/login/create-password', (req, res) => {
+  const { password, pin, tmpPin } = req.body;
+  let user = null;
+
+  if (!password || !pin || !tmpPin) {
+    res.status(invalidParams.status).json(invalidParams);
+    return;
+  }
+
+  user = userdb.users.filter((user) => user.pin && user.tmpPin && user.pin === pin && user.tmpPin === tmpPin)[0];
+  if (!user || !user.isVerified) {
+    res.status(unauthorized.status).json(unauthorized);
+    return;
+  }
+
+  user.passwords = user.passwords || [];
+  if (user.passwords.includes(password)) {
+    res.status(403).json({
+      status: 403,
+      message: 'cannot use previously used password'
+    });
+    return;
+  }
+
+  user.password = password;
+  if (user.passwords.length >= 5) {
+    user.passwords.shift();
+  }
+  user.passwords.push(password);
+
+  delete user.pin;
+  delete user.tmpPin;
+  delete user.isVerified;
+
+  res.status(200).json({});
+});
+
+server.post('/auth/login/select-username', (req, res) => {
+  const { pin, tmpPin } = req.body;
+  let user = null;
+  let usernames = [];
+
+  if (!pin || !tmpPin) {
+    res.status(invalidParams.status).json(invalidParams);
+    return;
+  }
+
+  user = userdb.users.filter((user) => user.pin && user.tmpPin && user.pin === pin && user.tmpPin === tmpPin)[0];
+  if (!user || !user.isVerified) {
+    res.status(unauthorized.status).json(unauthorized);
+    return;
+  }
+
+  usernames = user.accounts.map(account => {
+    return {
+      username: account.username,
+      merchantId: account.merchantId
+    };
   });
+
+  delete user.pin;
+  delete user.tmpPin;
+  delete user.isVerified;
+
+  res.status(200).json({ usernames });
 });
 
 server.use(/^(?!\/auth).*$/, (req, res, next) => {
