@@ -4,7 +4,6 @@
   "description": "Simple Fake API",
   "main": "main.js",
   "scripts": {
-    "start:noauth": "json-server --watch ./database.json",
     "start": "node server.js"
   },
   "author": "ME:)",
