@@ -1,3 +1,7 @@
+if ((process.env.NODE_ENV || 'development') === 'development') {
+  require('dotenv').config();
+}
+
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const jsonServer = require('json-server');

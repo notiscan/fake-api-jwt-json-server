@@ -5,8 +5,8 @@ const nodemailer = require('nodemailer');
 //   port: 587,
 //   secure: false,
 //   auth: {
-//     user: 'nwjq6c2rwg4beyuh@ethereal.email',
-//     pass: 'qUxhbAgewsccCH7dJa'
+//     user: process.env.ETHEREAL_USER,
+//     pass: process.env.ETHEREAL_PASS
 //   }
 // });
 
@@ -15,13 +15,13 @@ const sendGridtransporter = nodemailer.createTransport({
   port: 587,
   requiresAuth: true,
   auth: {
-    user: 'eanarh',
-    pass: '97plymouth'
+    user: process.env.SENDGRID_USER,
+    pass: process.env.SENDGRID_PASS
   }
 });
 
 const mailOptions = ({ email, pin }) => ({
-  from: 'Authorize.NET Dev <noreply@mintymint.herokuapp.com>',
+  from: `Authorize.NET Dev <${process.env.SENDGRID_EMAIL_FROM}>`,
   to: email,
   subject: 'PIN for Authorize.NET Account',
   text: `Requested PIN is ${pin}`,
