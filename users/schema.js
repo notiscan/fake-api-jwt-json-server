@@ -2,10 +2,13 @@ const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 const userSchema = new Schema({
-  accounts: [{ type: Schema.Types.ObjectId, ref: 'Accounts' }],
+  accounts: [{ type: Schema.Types.ObjectId, ref: 'Account' }],
   email: { type: String, trim: true, required: true, unique: true },
   firstname: { type: String, trim: true, required: true },
+  isVerified: { type: Boolean },
   lastname: { type: String, trim: true, required: true },
+  tmpPin: { type: Number },
+  pin: { type: Number },
   password: { type: String, trim: true, required: true },
   passwords: [{ type: String, trim: true, default: '' }]
 },

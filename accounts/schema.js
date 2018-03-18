@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 const accountSchema = new Schema({
-  username: { type: String, trim: true, required: true, unique: true },
-  permissions: [{ type: String, trim: true, default: '' }],
+  loginHistory: [{ type: Date }],
+  merchant: { type: Schema.Types.ObjectId, ref: 'Merchant' },
+  permissions: [{ type: String, trim: true }],
   user: { type: Schema.Types.ObjectId, ref: 'User' },
-  merchant: { type: Schema.Types.ObjectId, ref: 'Merchant' }
+  username: { type: String, trim: true, required: true, unique: true }
 },
 {
   timestamps: true

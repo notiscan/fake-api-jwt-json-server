@@ -13,12 +13,15 @@ const login = require('./login');
 const createPassword = require('./login/create-password');
 const forgotPassword = require('./login/forgot-password');
 const forgotUsername = require('./login/forgot-username');
-const selectUsername = require('./login/select-username');
+const getAccounts = require('./login/get-accounts');
 const sendPin = require('./login/send-pin');
 const verifyPin = require('./login/verify-pin');
 const authorizeRoutes = require('./login/authorize-routes');
 
 const users = require('./users');
+const accounts = require('./accounts');
+const merchants = require('./merchants');
+const transactions = require('./transactions');
 
 const {
   MONGO_USER,
@@ -44,15 +47,18 @@ server.post('/auth/login', login);
 server.post('/auth/login/create-password', createPassword);
 server.post('/auth/login/forgot-password', forgotPassword);
 server.post('/auth/login/forgot-username', forgotUsername);
-server.post('/auth/login/select-username', selectUsername);
+server.post('/auth/login/get-accounts', getAccounts);
 server.post('/auth/login/send-pin', sendPin);
 server.post('/auth/login/verify-pin', verifyPin);
 
 server.use('/users', users);
+server.use('/accounts', accounts);
+server.use('/merchants', merchants);
+server.use('/transactions', transactions);
 
 server.use(/^(?!\/auth).*$/, authorizeRoutes);
 
-server.use(router);
+// server.use(router);
 
 server.listen(process.env.PORT || 3000, () => {
   console.log('Run Auth API Server');

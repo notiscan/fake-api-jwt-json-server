@@ -1,28 +1,23 @@
-const fs = require('fs');
-
-const userdb = JSON.parse(fs.readFileSync('./users.json', 'UTF-8'));
+const putUser = require('../users/put');
 const codes = require('../lib/codes');
 
-const { unauthorized, invalidParams } = codes;
+const { invalidParams, serverError } = codes;
 
 const verifyPin = (req, res) => {
   const { pin, tmpPin } = req.body;
-  let user = null;
+  const isVerified = true;
 
   if (!pin || !tmpPin) {
-    res.status(invalidParams.status).json(invalidParams);
-    return;
+    res.status(invalidParams.status).json(invalidParams); return;
   }
 
-  user = userdb.users.filter((user) => user.pin && user.tmpPin && user.pin === pin && user.tmpPin === tmpPin)[0];
-  user.isVerified = true;
+  putUser.byData({ pin, tmpPin }, { isVerified }, (err, user) => {
+    if (err) {
+      res.status(serverError.status).json(serverError); return;
+    }
 
-  if (!user) {
-    res.status(unauthorized.status).json(unauthorized);
-    return;
-  }
-
-  res.status(200).json({});
+    res.status(200).json({});
+  });
 };
 
 module.exports = verifyPin;

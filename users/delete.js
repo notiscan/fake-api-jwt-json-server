@@ -3,16 +3,16 @@ const codes = require('../lib/codes');
 
 const { serverError } = codes;
 
-const Delete = (id, callback) => {
+const byIdData = (id, callback) => {
   User.findByIdAndRemove(id, (err) => {
     callback(err, id);
   });
 };
 
-const route = (req, res) => {
+const byIdRoute = (req, res) => {
   const id = req.params.id;
 
-  Delete(id, (err, id) => {
+  byIdData(id, (err, id) => {
     if (err) {
       res.status(serverError.status).json(serverError); return;
     }
@@ -20,4 +20,4 @@ const route = (req, res) => {
   });
 };
 
-module.exports = route;
+module.exports = { byIdRoute, byIdData };

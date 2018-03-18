@@ -1,25 +1,22 @@
+const putUser = require('../users/put');
 const codes = require('../lib/codes');
-const getUser = require('../lib/get-user');
 
-const { unauthorized, invalidParams } = codes;
+const { invalidParams, serverError } = codes;
 
 const forgotPassword = (req, res) => {
   const { username, email } = req.body;
-  let user = null;
+  const tmpPin = Math.floor(Math.random() * 90000) + 10000;
 
   if (!username || !email) {
     res.status(invalidParams.status).json(invalidParams);
   }
 
-  user = getUser(username);
-  if (!user) {
-    res.status(unauthorized.status).json(unauthorized);
-    return;
-  }
-
-  user.tmpPin = Math.floor(Math.random() * 90000) + 10000;
-
-  res.status(200).json({ tmpPin: user.tmpPin });
+  putUser.byData({ email }, { tmpPin }, (err, user) => {
+    if (err) {
+      res.status(serverError.status).json(serverError); return;
+    }
+    res.status(200).json({ tmpPin });
+  });
 };
 
 module.exports = forgotPassword;

@@ -1,37 +1,31 @@
-const fs = require('fs');
-
+const putUser = require('../users/put');
 const sendMail = require('../lib/send-mail');
-const userdb = JSON.parse(fs.readFileSync('./users.json', 'UTF-8'));
 
 const codes = require('../lib/codes');
-const { unauthorized, invalidParams } = codes;
+const { invalidParams, serverError } = codes;
 
 const sendPin = (req, res) => {
   const { tmpPin } = req.body;
-  let user = null;
+  const pin = Math.floor(Math.random() * 90000) + 10000;
 
   if (!tmpPin) {
     res.status(invalidParams.status).json(invalidParams);
     return;
   }
 
-  user = userdb.users.filter((user) => user.tmpPin && user.tmpPin === tmpPin)[0];
-  if (!user) {
-    res.status(unauthorized.status).json(unauthorized);
-    return;
-  }
-
-  user.pin = Math.floor(Math.random() * 90000) + 10000;
-
-  sendMail(user, (err, info) => {
+  putUser.byData({ tmpPin }, { pin }, (err, user) => {
     if (err) {
-      res.status(500).json({
-        status: 500,
-        message: 'error sending pin'
-      });
-      return;
+      res.status(serverError.status).json(serverError); return;
     }
-    res.status(200).json({});
+
+    sendMail({ email: user.email, pin }, (err, info) => {
+      if (err) {
+        res.status(serverError.status).json(serverError);
+        return;
+      }
+
+      res.status(200).json(info);
+    });
   });
 };
 

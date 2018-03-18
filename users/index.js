@@ -6,11 +6,11 @@ const Get = require('./get');
 const Post = require('./post');
 const Put = require('./put');
 
-router.delete('/:id', Delete);
-router.get('/', Get.all);
-router.get('/:id', Get.byId);
-router.patch('/:id', Put);
-router.post('/', Post);
-router.put('/:id', Put);
+router.delete('/:id', Delete.byIdRoute);
+router.get('/', Get.allRoute);
+router.get('/:id', Get.byIdRoute);
+router.patch('/:id', Put.byIdRoute);
+router.post('/', Post.byRoute);
+router.put('/:id', Put.byIdRoute);
 
 module.exports = router;
