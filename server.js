@@ -18,7 +18,7 @@ const sendPin = require('./login/send-pin');
 const verifyPin = require('./login/verify-pin');
 const authorizeRoutes = require('./login/authorize-routes');
 
-const user = require('./user');
+const users = require('./users');
 
 const {
   MONGO_USER,
@@ -48,7 +48,7 @@ server.post('/auth/login/select-username', selectUsername);
 server.post('/auth/login/send-pin', sendPin);
 server.post('/auth/login/verify-pin', verifyPin);
 
-server.use('/users', user);
+server.use('/users', users);
 
 server.use(/^(?!\/auth).*$/, authorizeRoutes);
 

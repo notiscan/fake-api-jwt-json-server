@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-const userSchema = new mongoose.Schema({
-  accounts: [],
+const userSchema = new Schema({
+  accounts: [{ type: Schema.Types.ObjectId, ref: 'Accounts' }],
   email: { type: String, trim: true, required: true, unique: true },
   firstname: { type: String, trim: true, required: true },
   lastname: { type: String, trim: true, required: true },
