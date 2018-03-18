@@ -4,7 +4,8 @@
   "description": "Simple Fake API",
   "main": "main.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "start:dev": "nodemon server.js"
   },
   "author": "ME:)",
   "license": "ISC",

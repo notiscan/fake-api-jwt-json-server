@@ -9,8 +9,7 @@ const sendPin = (req, res) => {
   const pin = Math.floor(Math.random() * 90000) + 10000;
 
   if (!tmpPin) {
-    res.status(invalidParams.status).json(invalidParams);
-    return;
+    res.status(invalidParams.status).json(invalidParams); return;
   }
 
   putUser.byData({ tmpPin }, { pin }, (err, user) => {

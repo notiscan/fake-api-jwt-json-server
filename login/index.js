@@ -8,7 +8,7 @@ const login = (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    res.status(invalidParams.status).json(invalidParams);
+    res.status(invalidParams.status).json(invalidParams); return;
   }
 
   putAccount.byData({ username }, { $push: { 'loginHistory': new Date() } }, (err, account) => {

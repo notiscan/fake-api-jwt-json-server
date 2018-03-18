@@ -8,7 +8,7 @@ const forgotUsername = (req, res) => {
   const tmpPin = Math.floor(Math.random() * 90000) + 10000;
 
   if (!firstname || !lastname || !email) {
-    res.status(invalidParams.status).json(invalidParams);
+    res.status(invalidParams.status).json(invalidParams); return;
   }
 
   putUser.byData({ firstname, lastname, email }, { tmpPin }, (err, user) => {

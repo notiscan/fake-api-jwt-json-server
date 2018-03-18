@@ -8,17 +8,16 @@ const createPassword = (req, res) => {
   const isVerified = true;
 
   if (!pin || !tmpPin || !email || !password) {
-    res.status(invalidParams.status).json(invalidParams);
-    return;
+    res.status(invalidParams.status).json(invalidParams); return;
   }
 
-  const clearVerification = {
+  const reset = {
     pin: null,
     tmpPin: null,
     isVerified: false
   };
 
-  putUser.byData({ pin, tmpPin, email, isVerified }, { password, ...clearVerification }, (err, user) => {
+  putUser.byData({ pin, tmpPin, email, isVerified }, { password, ...reset }, (err, user) => {
     if (err) {
       res.status(serverError.status).json(serverError); return;
     }
