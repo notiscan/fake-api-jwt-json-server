@@ -1,7 +1,7 @@
 const putUser = require('../users/put');
 const codes = require('../lib/codes');
 
-const { invalidParams, serverError } = codes;
+const { invalidParams, serverError, unauthorized } = codes;
 
 const createPassword = (req, res) => {
   const { pin, tmpPin, email, password } = req.body;
@@ -22,6 +22,11 @@ const createPassword = (req, res) => {
     if (err) {
       res.status(serverError.status).json(serverError); return;
     }
+
+    if (!user) {
+      res.status(unauthorized.status).json(unauthorized); return;
+    }
+
     res.status(200).json({});
   });
 };

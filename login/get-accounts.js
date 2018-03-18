@@ -1,7 +1,7 @@
 const putUser = require('../users/put');
 const codes = require('../lib/codes');
 
-const { invalidParams, serverError } = codes;
+const { invalidParams, serverError, unauthorized } = codes;
 
 const getAccounts = (req, res) => {
   const { pin, tmpPin, email } = req.body;
@@ -21,6 +21,11 @@ const getAccounts = (req, res) => {
     if (err) {
       res.status(serverError.status).json(serverError); return;
     }
+
+    if (!user) {
+      res.status(unauthorized.status).json(unauthorized); return;
+    }
+
     res.status(200).json({ accounts: user.accounts });
   });
 };

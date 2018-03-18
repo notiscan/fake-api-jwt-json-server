@@ -7,7 +7,7 @@ const jsonServer = require('json-server');
 const mongoose = require('mongoose');
 
 const server = jsonServer.create();
-const router = jsonServer.router('./database.json');
+const codes = require('./lib/codes');
 
 const login = require('./login');
 const createPassword = require('./login/create-password');
@@ -43,6 +43,11 @@ server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 server.use(jsonServer.defaults());
 
+server.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(codes.serverError.status).send(codes.serverError);
+});
+
 server.post('/auth/login', login);
 server.post('/auth/login/create-password', createPassword);
 server.post('/auth/login/forgot-password', forgotPassword);
@@ -52,11 +57,11 @@ server.post('/auth/login/send-pin', sendPin);
 server.post('/auth/login/verify-pin', verifyPin);
 
 server.use('/users', users);
+
+server.use(/^(?!\/auth).*$/, authorizeRoutes);
 server.use('/accounts', accounts);
 server.use('/merchants', merchants);
 server.use('/transactions', transactions);
-
-server.use(/^(?!\/auth).*$/, authorizeRoutes);
 
 // server.use(router);
 

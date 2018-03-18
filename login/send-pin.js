@@ -2,7 +2,7 @@ const putUser = require('../users/put');
 const sendMail = require('../lib/send-mail');
 
 const codes = require('../lib/codes');
-const { invalidParams, serverError } = codes;
+const { invalidParams, serverError, unauthorized } = codes;
 
 const sendPin = (req, res) => {
   const { tmpPin } = req.body;
@@ -16,6 +16,10 @@ const sendPin = (req, res) => {
   putUser.byData({ tmpPin }, { pin }, (err, user) => {
     if (err) {
       res.status(serverError.status).json(serverError); return;
+    }
+
+    if (!user) {
+      res.status(unauthorized.status).json(unauthorized); return;
     }
 
     sendMail({ email: user.email, pin }, (err, info) => {
