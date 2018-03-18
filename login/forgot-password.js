@@ -16,7 +16,7 @@ const forgotPassword = (req, res) => {
       res.status(serverError.status).json(serverError); return;
     }
 
-    if (!user) {
+    if (!user || user.accounts.findIndex((account) => account.username === username) === -1) {
       res.status(unauthorized.status).json(unauthorized); return;
     }
 

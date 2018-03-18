@@ -10,9 +10,11 @@ const byIdData = (id, data, callback) => {
 };
 
 const byData = (query, data, callback) => {
-  Account.findOneAndUpdate(query, data).populate('user').exec((err, account) => {
-    callback(err, account);
-  });
+  Account.findOneAndUpdate(query, data)
+    .populate('user')
+    .exec((err, account) => {
+      callback(err, account);
+    });
 };
 
 const byIdRoute = (req, res) => {

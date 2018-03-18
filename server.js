@@ -7,6 +7,7 @@ const jsonServer = require('json-server');
 const mongoose = require('mongoose');
 
 const server = jsonServer.create();
+const router = jsonServer.router('./database.json');
 const codes = require('./lib/codes');
 
 const login = require('./login');
@@ -63,7 +64,7 @@ server.use('/accounts', accounts);
 server.use('/merchants', merchants);
 server.use('/transactions', transactions);
 
-// server.use(router);
+server.use(router);
 
 server.listen(process.env.PORT || 3000, () => {
   console.log('Run Auth API Server');

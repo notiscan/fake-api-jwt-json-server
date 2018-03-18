@@ -1,5 +1,5 @@
 {
-  "merchants": [
+  "shops": [
     {
       "id": 1,
       "name": "Mike's Bike Shop"
@@ -11,26 +11,6 @@
     {
       "id": 3,
       "name": "Minty Cafe"
-    }
-  ],
-  "transactions": [
-    {
-      "id": 1,
-      "cost": 11,
-      "quantity": 10,
-      "merchantId": 1
-    },
-    {
-      "id": 2,
-      "cost": 12,
-      "quantity": 100,
-      "merchantId": 2
-    },
-    {
-      "id": 3,
-      "cost": 15,
-      "quantity": 101,
-      "merchantId": 1
     }
   ]
 }
