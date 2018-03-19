@@ -59,13 +59,13 @@ server.post('/auth/login/get-accounts', getAccounts);
 server.post('/auth/login/send-pin', sendPin);
 server.post('/auth/login/verify-pin', verifyPin);
 
-server.use('/users', users);
-server.use('/seed', seed);
-
 server.use(/^(?!\/auth).*$/, authorizeRoutes);
+server.use('/users', users);
 server.use('/accounts', accounts);
 server.use('/merchants', merchants);
 server.use('/transactions', transactions);
+
+server.use('/seed', seed);
 
 server.use(router);
 
