@@ -27,7 +27,12 @@ const byIdData = (id, callback) => {
     .populate({
       path: 'user',
       select: 'email username firstname lastname password'
-    }).exec((err, account) => {
+    })
+    .populate({
+      path: 'merchant',
+      select: 'name description'
+    })
+    .exec((err, account) => {
       callback(err, account);
     });
 };

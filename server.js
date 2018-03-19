@@ -24,6 +24,8 @@ const accounts = require('./accounts');
 const merchants = require('./merchants');
 const transactions = require('./transactions');
 
+const seed = require('./lib/seed');
+
 const {
   MONGO_USER,
   MONGO_PASS,
@@ -58,6 +60,7 @@ server.post('/auth/login/send-pin', sendPin);
 server.post('/auth/login/verify-pin', verifyPin);
 
 server.use('/users', users);
+server.use('/seed', seed);
 
 server.use(/^(?!\/auth).*$/, authorizeRoutes);
 server.use('/accounts', accounts);

@@ -6,7 +6,13 @@ const accountSchema = new Schema({
   merchant: { type: Schema.Types.ObjectId, ref: 'Merchant' },
   permissions: [{ type: String, trim: true }],
   user: { type: Schema.Types.ObjectId, ref: 'User' },
-  username: { type: String, trim: true, required: true, unique: true }
+  username: {
+    type: String,
+    trim: true,
+    required: true,
+    unique: true,
+    lowercase: true
+  }
 },
 {
   timestamps: true

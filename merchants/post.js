@@ -1,6 +1,6 @@
 const Merchant = require('./schema');
-const codes = require('../lib/codes');
 
+const codes = require('../lib/codes');
 const { serverError, duplicateError } = codes;
 
 const byMerchant = (merchant, callback) => {
