@@ -49,7 +49,7 @@ db.once('open', function () {
 server.use(helmet());
 
 server.use((req, res, next) => {
-  if (NODE_ENV !== 'development') {
+  if (NODE_ENV === 'development') {
     return next();
   }
 
