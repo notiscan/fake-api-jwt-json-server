@@ -5,6 +5,7 @@ if ((process.env.NODE_ENV || 'development') === 'development') {
 const bodyParser = require('body-parser');
 const jsonServer = require('json-server');
 const mongoose = require('mongoose');
+var helmet = require('helmet');
 
 const server = jsonServer.create();
 const router = jsonServer.router('./database.json');
@@ -27,12 +28,15 @@ const transactions = require('./transactions');
 const seed = require('./lib/seed');
 
 const {
+  NODE_ENV,
   MONGO_USER,
   MONGO_PASS,
   MONGO_URL,
   MONGO_PORT,
   MONGO_DATABASE_NAME,
-  MONGO_DATABASE_CONFIG
+  MONGO_DATABASE_CONFIG,
+  MASHAPE_HEADER_VALUE,
+  MASHAPE_HEADER_KEY
 } = process.env;
 
 mongoose.connect(`mongodb://${MONGO_USER}:${MONGO_PASS}@${MONGO_URL}:${MONGO_PORT}/${MONGO_DATABASE_NAME}${MONGO_DATABASE_CONFIG}`);
@@ -40,6 +44,19 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function () {
   console.log('connected to db');
+});
+
+server.use(helmet());
+
+server.use((req, res, next) => {
+  if (NODE_ENV !== 'development') {
+    return next();
+  }
+
+  if (req.headers[MASHAPE_HEADER_KEY.toLowerCase()] !== MASHAPE_HEADER_VALUE) {
+    return res.status(403).json({ error: 'No credentials sent!' });
+  }
+  next();
 });
 
 server.use(bodyParser.urlencoded({ extended: true }));
