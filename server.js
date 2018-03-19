@@ -61,7 +61,9 @@ server.use((req, res, next) => {
 
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
-server.use(jsonServer.defaults());
+server.use(jsonServer.defaults({
+  noCors: NODE_ENV === 'production'
+}));
 
 server.use((err, req, res, next) => {
   console.error(err.stack);
