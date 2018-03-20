@@ -49,9 +49,7 @@ db.once('open', function () {
 server.use(helmet());
 
 server.use((req, res, next) => {
-  if (NODE_ENV === 'development') {
-    return next();
-  }
+  if (NODE_ENV === 'development') return next();
 
   if (req.headers[MASHAPE_HEADER_KEY.toLowerCase()] !== MASHAPE_HEADER_VALUE) {
     return res.status(403).json({ error: 'No credentials sent!' });
@@ -61,9 +59,7 @@ server.use((req, res, next) => {
 
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
-server.use(jsonServer.defaults({
-  noCors: NODE_ENV === 'production'
-}));
+server.use(jsonServer.defaults());
 
 server.use((err, req, res, next) => {
   console.error(err.stack);
