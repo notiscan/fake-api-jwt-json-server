@@ -1,20 +1,30 @@
 FORMAT: 1A
-HOST: https://anarh-mintymint-v1.p.mashape.com/merchants
+HOST: https://anarh-mintymint-v1.p.mashape.com
 
 # MintyMint
 
-An exercise in providing a basic mock API for project code-named MintyMint. 
+An exercise in providing a basic mock API for project code-named MintyMint. All requests must use a valid API key in the request header as follows.
+
+`X-Mashape-Key: Your API Key` 
+
+Get an API key by emailing the owner of this API or creating a free account at http://marketplace.mashape.com.
 
 # Group Authentication
 
+Login, account and password retrieval services. 
+
 ## /auth/login
 
-First you need a MintyMint API developer key. Get your developer key by emailing the owner of this API or creating an account at http://marketplace.mashape.com.
+A successful login provides a JSON Web Token (JWT). Note, session token lasts 1hr
 
 ### POST [POST]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            
+    + Body
             
             {
                 "username": "john",
@@ -22,7 +32,7 @@ First you need a MintyMint API developer key. Get your developer key by emailing
             }
 
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
                 "accessToken": "yJhbGciOiJIUzI1..."
@@ -30,12 +40,16 @@ First you need a MintyMint API developer key. Get your developer key by emailing
             
 ## /auth/login/forgot-username
 
-Provides the user a step to retrieving usernames by using email, first name and last name
+First step in identifying user in order to retrieve account username
 
 ### POST [POST]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            
+    + Body
     
             {   
                 "firstname": "john",
@@ -44,7 +58,7 @@ Provides the user a step to retrieving usernames by using email, first name and 
             }
             
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
                 "tmpToken": 12345
@@ -52,12 +66,16 @@ Provides the user a step to retrieving usernames by using email, first name and 
 
 ## /auth/login/forgot-password
 
-Provides the user a step to retrieving usernames by using email, and username
+First step in identifying user in order to change password
 
 ### POST [POST]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            
+    + Body
     
             {   
                 "username": "john",
@@ -65,7 +83,7 @@ Provides the user a step to retrieving usernames by using email, and username
             }
             
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
                 "tmpToken": 12345
@@ -73,31 +91,39 @@ Provides the user a step to retrieving usernames by using email, and username
             
 ## /auth/login/send-pin
 
-Provides the user a temporary pin for verification retrieving usernames by using email, and username
+Temporary PIN for account verification. Note: PIN is sent to email of user in production but to ethereal.email in development mode
 
 ### POST [POST]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            
+    + Body
     
             {   
                 "tmpPin": 12345
             }
             
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
             }
             
 ## /auth/login/verify-pin
 
-Provides the user a step to verifying PIN received via email or text
+Verify PIN sent to email or text
 
 ### POST [POST]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            
+    + Body
     
             {   
                 "pin": 67890,
@@ -105,19 +131,23 @@ Provides the user a step to verifying PIN received via email or text
             }
             
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
             }
 
 ## /auth/login/get-accounts
 
-Provides the user a list of their usernames
+Provides a list of accounts for user
 
 ### POST [POST]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            
+    + Body
     
             {   
                 "pin": 67890,
@@ -126,12 +156,11 @@ Provides the user a list of their usernames
             }
             
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
                 "accounts": [
                     {
-                        "_id": "5aaf22a565589a0acef8750b",
                         "username": "john",
                         "merchant": {
                             "description": "Greatest coffee shop",
@@ -144,12 +173,16 @@ Provides the user a list of their usernames
          
 ## /auth/login/create-password
 
-User can reset/create password with this endpoint
+Create new password
 
 ### POST [POST]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            
+    + Body
     
             {   
                 "pin": 67890,
@@ -160,7 +193,7 @@ User can reset/create password with this endpoint
             
 + Response 200 (application/json)
 
-    + Schema
+    + Body
 
             {
             }
@@ -168,14 +201,22 @@ User can reset/create password with this endpoint
             
 # Group Merchants
 
+A valid session token must be used for all requests
+
 ## /merchants
 
-See list of all Merchants.
+View or add a merchant.
 
 ### GET [GET]
 
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
 + Response 200 (application/json)
-    + Schema 
+    + Body 
     
             {
                 "merchants": [
@@ -183,95 +224,138 @@ See list of all Merchants.
                         "description": "Greatest coffee shop",
                         "accounts": [ "5aaf22a565589a0acef8750b" ],
                         "_id": "5aaf22a365589a0acef87443",
-                        "name": "The Coffee Shop",
+                        "name": "The Coffee Shop"
                     }
                 ]
+            }
+
+### POST [POST]
+
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+            
+    + Body 
+    
+            {
+                "description": "New coffee shop",
+                "accounts": [ "5aaf22a565589a0acef8750b" ],
+                "name": "New Coffee Shop"
+            }
+
++ Response 200 (application/json)
+    + Body 
+    
+            {
+                "description": "New coffee shop",
+                "accounts": [ "5aaf22a565589a0acef8750b" ],
+                "name": "New Coffee Shop"
             }
 
           
 ## /merchants/{id}
 
-CRUD operations of a Merchant account. Available to privileged accounts
+CRUD operations for a Merchant account.
 
 + Parameters
     + id (number) - ID of the Merchant in the form of an ObjectID
 
 ### GET [GET]
 
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
 + Response 200 (application/json)
-    + Schema
+    + Body
 
              {
-                "merchant": [
-                    {
-                        "description": "Greatest coffee shop",
-                        "accounts": [ "5aaf22a565589a0acef8750b" ],
-                        "_id": "5aaf22a365589a0acef87443",
-                        "name": "The Coffee Shop",
-                    }
-                ]
+                "merchant": {
+                    "description": "Greatest coffee shop",
+                    "accounts": [ "5aaf22a565589a0acef8750b" ],
+                    "name": "The Coffee Shop"
+                }
             }
             
 ### PUT [PUT]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+            
+    + Body
     
             {
                 "description": "New Description",
-                "_id": "5aaf22a365589a0acef87443",
-                "name": "The Coffee Shop New Name",
+                "name": "The Coffee Shop New Name"
             }
 
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
-                "description": "New Description",
-                "_id": "5aaf22a365589a0acef87443",
-                "name": "The Coffee Shop New Name",
+                "id": "5aaf22a365589a0acef87443"
             }
 
 ### PATCH [PATCH]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+            
+    + Body
     
             {
-                "description": "New Description",
-                "_id": "5aaf22a365589a0acef87443",
-                "name": "The Coffee Shop New Name",
+                "id": "5aaf22a365589a0acef87443"
             }
 
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
-                "description": "New Description",
-                "_id": "5aaf22a365589a0acef87443",
-                "name": "The Coffee Shop New Name",
+                "id": "5aaf22a365589a0acef87443"
             }
             
 ### DELETE [DELETE]
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
 
 + Response 200 (application/json)
-    + Schema
+    + Body
     
             {
-                "_id": "5aaf22a365589a0acef87443",
+                "id": "5aaf22a365589a0acef87443"
             }
 
 
 # Group Accounts
 
+A valid session token must be used for all requests
+
 ## /accounts
 
-See list of all accounts.
+View and add accounts.
 
 ### GET [GET]
-
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+            
 + Response 200 (application/json)
-    + Schema 
+    + Body 
     
             {
                 "accounts": [
@@ -285,6 +369,32 @@ See list of all accounts.
             }
 
 
+### POST [POST]
+
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+            
+    + Body 
+    
+            {
+                "username": "newuser",
+                "merchant": "5aaf22a365589a0acef87444",
+                "user": "5aaf22a565589a0acef874a8"
+            }
+
++ Response 200 (application/json)
+    + Body 
+    
+            {
+                "username": "newuser",
+                "merchant": "5aaf22a365589a0acef87444",
+                "user": "5aaf22a565589a0acef874a8"
+            }
+
+
 ## /accounts/{id}
 
 CRUD operations of an account. Available to privileged accounts
@@ -294,93 +404,147 @@ CRUD operations of an account. Available to privileged accounts
 
 ### GET [GET]
 
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
 + Response 200 (application/json)
-    + Schema
+    + Body
 
              {
-                "account": [
-                    {
-                        "_id": "5aaf22a565589a0acef8750c",
-                        "username": "user1",
-                        "merchant": "5aaf22a365589a0acef87444",
-                        "user": "5aaf22a565589a0acef874a8"
-                    }
-                ]
+                "account": {
+                    "username": "user1",
+                    "merchant": "5aaf22a365589a0acef87444",
+                    "user": "5aaf22a565589a0acef874a8"
+                }
             }
             
 ### PUT [PUT]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
+    + Body
     
             {
-                "_id": "5aaf22a565589a0acef8750c",
                 "username": "newusername",
                 "merchant": "5aaf22a365589a0acef87444",
                 "user": "5aaf22a565589a0acef874a8"
             }
 
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
-                "_id": "5aaf22a565589a0acef8750c",
-                "username": "newusername",
-                "merchant": "5aaf22a365589a0acef87444",
-                "user": "5aaf22a565589a0acef874a8"
+                "id": "5aaf22a365589a0acef87443"
             }
 
 ### PATCH [PATCH]
-
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+            
+    + Body
     
             {
-                "username": "newusername",
+                "username": "newusername"
             }
 
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
-                "_id": "5aaf22a565589a0acef8750c",
-                "username": "newusername",
-                "merchant": "5aaf22a365589a0acef87444",
-                "user": "5aaf22a565589a0acef874a8"
+                "id": "5aaf22a365589a0acef87443"
             }
             
 ### DELETE [DELETE]
 
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
 + Response 200 (application/json)
-    + Schema
+    + Body
     
             {
-                "_id": "5aaf22a365589a0acef87443",
+                "id": "5aaf22a365589a0acef87443"
             }
 
 
 # Group Users
 
+A valid session token must be used for all requests
+
 ## /users
 
-See list of all users.
+View and add users.
 
 ### GET [GET]
 
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
 + Response 200 (application/json)
-    + Schema 
+    + Body 
     
             {
                 "users": [
                     {
                         "_id": "5aaf22a565589a0acef8750c",
-                        "username": "user1",
-                        "merchant": "5aaf22a365589a0acef87444",
-                        "user": "5aaf22a565589a0acef874a8"
+                        "email": "email@example.com",
+                        "firstname": "John",
+                        "lastname": "Smith",
+                        "accounts": ["5aaf22a565589a0acef874a8"]
                     }
                 ]
             }
 
+### POST [POST]
+
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+            
+    + Body 
+    
+            {
+                "user": [
+                    {
+                        "email": "email@example.com",
+                        "firstname": "John",
+                        "lastname": "Smith",
+                        "accounts": ["5aaf22a565589a0acef874a8"]
+                    }
+                ]
+            }
+
++ Response 200 (application/json)
+    + Body 
+    
+            {
+                "user": [
+                    {
+                        "email": "email@example.com",
+                        "firstname": "John",
+                        "lastname": "Smith",
+                        "accounts": ["5aaf22a565589a0acef874a8"]
+                    }
+                ]
+            }
 
 ## /users/{id}
 
@@ -391,83 +555,105 @@ CRUD operations of a user object. Available to privileged accounts
 
 ### GET [GET]
 
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
 + Response 200 (application/json)
-    + Schema
+    + Body
 
              {
-                "user": [
-                    {
-                        "_id": "5aaf22a565589a0acef8750c",
-                        "username": "user1",
-                        "merchant": "5aaf22a365589a0acef87444",
-                        "user": "5aaf22a565589a0acef874a8"
-                    }
-                ]
+                "user": {
+                    "email": "email@example.com",
+                    "firstname": "John",
+                    "lastname": "Smith",
+                    "accounts": ["5aaf22a565589a0acef874a8"]
+                }
             }
             
 ### PUT [PUT]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
+    + Body
     
             {
-                "_id": "5aaf22a565589a0acef8750c",
-                "username": "newusername",
-                "merchant": "5aaf22a365589a0acef87444",
-                "user": "5aaf22a565589a0acef874a8"
+                "email": "email@example.com",
+                "firstname": "John",
+                "lastname": "Smith",
+                "accounts": ["5aaf22a565589a0acef874a8"]
             }
 
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
-                "_id": "5aaf22a565589a0acef8750c",
-                "username": "newusername",
-                "merchant": "5aaf22a365589a0acef87444",
-                "user": "5aaf22a565589a0acef874a8"
+                "id": "5aaf22a365589a0acef87443"
             }
 
 ### PATCH [PATCH]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
+    + Body
     
             {
-                "username": "newusername",
+                "email": "email@example.com"
             }
 
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
-                "_id": "5aaf22a565589a0acef8750c",
-                "username": "newusername",
-                "merchant": "5aaf22a365589a0acef87444",
-                "user": "5aaf22a565589a0acef874a8"
+                "id": "5aaf22a365589a0acef87443"
             }
             
 ### DELETE [DELETE]
 
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
 + Response 200 (application/json)
-    + Schema
+    + Body
     
             {
-                "_id": "5aaf22a365589a0acef87443",
+                "id": "5aaf22a365589a0acef87443"
             }
 
 # Group Transactions
 
+A valid session token must be used for all requests
+
 ## /transactions
 
-See list of all transactions.
+View and add transactions.
 
 ### GET [GET]
 
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
 + Response 200 (application/json)
-    + Schema 
+    + Body 
     
             {
-                "users": [
+                "transactions": [
                     {
                         "_id": "5aaf22a565589a0acef8750c",
                         "item": "blue toy",
@@ -476,52 +662,87 @@ See list of all transactions.
                 ]
             }
 
+### POST [POST]
+
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
+    + Body 
+    
+            {
+                "item": "blue toy",
+                "merchant": "5aaf22a365589a0acef87444"
+            }
+
++ Response 200 (application/json)
+    + Body 
+    
+            {
+                "item": "blue toy",
+                "merchant": "5aaf22a365589a0acef87444"
+            }
 
 ## /transactions/{id}
 
-CRUD operations of a transaction model. Available to privileged accounts
+CRUD operations of a transaction model.
 
 + Parameters
     + id (number) - ID of the transaction in the form of an ObjectID
 
 ### GET [GET]
 
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
 + Response 200 (application/json)
-    + Schema
+    + Body
 
              {
-                "user": [
-                    {
-                        "_id": "5aaf22a565589a0acef8750c",
+                "transaction": {
                         "item": "blue toy",
                         "merchant": "5aaf22a365589a0acef87444"
                     }
-                ]
             }
             
 ### PATCH [PATCH]
 
 + Request (application/json)
-    + Schema
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
+    + Body
     
             {
-                "item": "blue toy red",
+                "item": "blue toy red"
             }
 
 + Response 200 (application/json)
-    + Schema
+    + Body
 
             {
-                "item": "blue toy red",
+                "id": "5aaf22a365589a0acef87443"
             }
             
 ### DELETE [DELETE]
 
++ Request (application/json)
+    + Headers
+    
+            X-Mashape-Key: Your API Key
+            Authorization: Bearer Your Session Token
+
 + Response 200 (application/json)
-    + Schema
+    + Body
     
             {
-                "_id": "5aaf22a365589a0acef87443",
+                "id": "5aaf22a365589a0acef87443"
             }
             
-
