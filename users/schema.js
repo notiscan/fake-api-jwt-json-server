@@ -18,7 +18,7 @@ const userSchema = new Schema({
 
 userSchema.pre('save', function (next) {
   if (this.passwords.includes(this.password)) {
-    const err = new Error('something went wrong');
+    const err = new Error('Cannot use existing password');
     next(err); return;
   }
 

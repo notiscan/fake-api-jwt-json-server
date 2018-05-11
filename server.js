@@ -19,6 +19,7 @@ const getAccounts = require('./login/get-accounts');
 const sendPin = require('./login/send-pin');
 const verifyPin = require('./login/verify-pin');
 const authorizeRoutes = require('./login/authorize-routes');
+const createAccount = require('./create-account');
 
 const users = require('./users');
 const accounts = require('./accounts');
@@ -73,6 +74,8 @@ server.post('/auth/login/forgot-username', forgotUsername);
 server.post('/auth/login/get-accounts', getAccounts);
 server.post('/auth/login/send-pin', sendPin);
 server.post('/auth/login/verify-pin', verifyPin);
+
+server.post('/create-account', createAccount);
 
 server.use(/^(?!\/auth).*$/, authorizeRoutes);
 server.use('/users', users);
