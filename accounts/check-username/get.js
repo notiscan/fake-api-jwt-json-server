@@ -9,6 +9,8 @@ const byData = (query = {}, callback) => {
       });
     return;
   }
+
+  callback();
 };
 
 const get = (req, res) => {
