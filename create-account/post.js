@@ -3,7 +3,7 @@ const Merchant = require('../merchants/schema');
 const Account = require('../accounts/schema');
 
 const codes = require('../lib/codes');
-const { serverError, duplicateError } = codes;
+const { serverError, duplicateError, accountCreated } = codes;
 
 const byNewAcount = (data, callback) => {
   const {
@@ -32,29 +32,43 @@ const byNewAcount = (data, callback) => {
   });
 
   newMerchant.save((err, merchant) => {
-    
+    if (err) { callback(err); return; }
     newAccount.merchant = merchant.id;
+
     newAccount.save((err, account) => {
-      newUser.account = [account.id];
+      if (err) { callback(err); return; }
+      newUser.accounts = [account.id];
+
       newUser.save((err, user) => {
-        callback(err, user);
+        if (err) { callback(err); return; }
+
+        Merchant.findByIdAndUpdate(merchant.id, {
+          accounts: [account.id]
+        }, (err) => {
+          if (err) { callback(err); return; }
+          Account.findByIdAndUpdate(account.id, {
+            user: user.id
+          }, (err, account) => {
+            callback(err);
+          });
+        });
       });
     });
-  });
+  }); 
 };
 
 const byRoute = (req, res) => {
   const data = req.body;
-  console.log(data);
-  byNewAcount(data, (err, user) => {
+  
+  byNewAcount(data, (err) => {
     if (err) {
-      if ((err.name === 'BulkWriteError' || err.name === 'MongoError') && err.code === 11000) {
+      if ((err.name === 'MongoError') && err.code === 11000) {
         res.status(duplicateError.status).send(duplicateError); return;
       }
-
       res.status(serverError.status).json(serverError); return;
     }
-    res.status(201).json({ id: user.id });
+
+    res.status(201).json(accountCreated);
   });
 };
 

@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 const userSchema = new Schema({
   accounts: [{ type: Schema.Types.ObjectId, ref: 'Account' }],
   email: { type: String, trim: true, required: true, unique: true },
+  phone: { type: String, trim: true },
   firstname: { type: String, trim: true, required: true },
   isVerified: { type: Boolean },
   lastname: { type: String, trim: true, required: true },

@@ -75,7 +75,7 @@ server.post('/auth/login/get-accounts', getAccounts);
 server.post('/auth/login/send-pin', sendPin);
 server.post('/auth/login/verify-pin', verifyPin);
 
-server.post('/create-account', createAccount);
+server.use('/create-account', createAccount);
 
 server.use(/^(?!\/auth).*$/, authorizeRoutes);
 server.use('/users', users);
