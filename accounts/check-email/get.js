@@ -1,4 +1,4 @@
-const User = require('../schema');
+const User = require('../../users/schema');
 
 const byData = (query = {}, callback) => {
   if (Object.keys(query).length !== 0) {
@@ -9,6 +9,8 @@ const byData = (query = {}, callback) => {
       });
     return;
   }
+
+  callback();
 };
 
 const get = (req, res) => {

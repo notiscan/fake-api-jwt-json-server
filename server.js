@@ -21,7 +21,7 @@ const verifyPin = require('./login/verify-pin');
 const authorizeRoutes = require('./login/authorize-routes');
 const createAccount = require('./create-account');
 const checkUsername = require('./accounts/check-username');
-const checkEmail = require('./users/check-email');
+const checkEmail = require('./accounts/check-email');
 
 const users = require('./users');
 const accounts = require('./accounts');
@@ -79,7 +79,7 @@ server.post('/auth/login/verify-pin', verifyPin);
 
 server.use('/create-account', createAccount);
 server.use('/accounts/check-username', checkUsername);
-server.use('/users/check-email', checkEmail);
+server.use('/accounts/check-email', checkEmail);
 
 server.use(/^(?!\/auth).*$/, authorizeRoutes);
 server.use('/users', users);
