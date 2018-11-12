@@ -16,6 +16,7 @@
     "jsonwebtoken": "^8.1.0",
     "mongoose": "^5.0.10",
     "nodemailer": "^4.6.3",
+    "robinhood": "^1.6.2",
     "supertest": "^3.0.0"
   },
   "devDependencies": {

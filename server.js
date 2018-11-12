@@ -22,6 +22,8 @@ const authorizeRoutes = require('./login/authorize-routes');
 const createAccount = require('./create-account');
 const checkUsername = require('./accounts/check-username');
 const checkEmail = require('./accounts/check-email');
+const robinhood = require('./robinhood');
+const robinhoodTest = require('./robinhood-test');
 
 const users = require('./users');
 const accounts = require('./accounts');
@@ -68,6 +70,9 @@ server.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(codes.serverError.status).send(codes.serverError);
 });
+
+server.use('/robinhood', robinhood);
+server.use('/robinhood-test', robinhoodTest);
 
 server.post('/auth/login', login);
 server.post('/auth/login/create-password', createPassword);
